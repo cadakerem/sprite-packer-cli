@@ -153,6 +153,9 @@ def process_images_and_save(image_paths, output_image_path, output_json_path, ma
     }
     
     for filename, img in images:
+        if filename not in frames_info:
+            continue
+        
         x, y, w, h = frames_info[filename]
         spritesheet.paste(img, (x, y), img)
         
