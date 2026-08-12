@@ -115,8 +115,8 @@ def process_images_and_save(image_paths, output_image_path, output_json_path, ma
     images = []
     for p in image_paths:
         try:
-            img = Image.open(p)
-            images.append((p.name, img))
+            with Image.open(p) as img:
+                images.append((p.name, img.convert("RGBA")))
         except Exception as e:
             print(f"Error loading {p}: {e}")
             
@@ -148,7 +148,7 @@ def process_images_and_save(image_paths, output_image_path, output_json_path, ma
     
     for filename, img in images:
         x, y, w, h = frames_info[filename]
-        spritesheet.paste(img, (x, y))
+        spritesheet.paste(img, (x, y), img)
         
         frame_data = {
             "filename": filename,
@@ -181,10 +181,22 @@ def generate_grouped_outputs(image_paths, base_image_path, base_json_path, max_w
         print("Hata: Eşleşen dosya bulunamadı.")
         return
         
+    misc_group = []
+    final_groups = {}
+    
+    for prefix, paths in groups.items():
+        if len(paths) == 1:
+            misc_group.extend(paths)
+        else:
+            final_groups[prefix] = paths
+            
+    if misc_group:
+        final_groups['misc'] = misc_group
+        
     base_img_path = Path(base_image_path)
     base_js_path = Path(base_json_path)
     
-    for prefix, paths in groups.items():
+    for prefix, paths in final_groups.items():
         out_img = base_img_path.with_name(f"{base_img_path.stem}_{prefix}{base_img_path.suffix}")
         out_js = base_js_path.with_name(f"{base_js_path.stem}_{prefix}{base_js_path.suffix}")
         print(f"\nProcessing group: {prefix}")
