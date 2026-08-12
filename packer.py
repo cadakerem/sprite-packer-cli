@@ -10,7 +10,7 @@ from PIL import Image
 
 def get_image_files(input_dir, filter_pattern=None):
     input_path = Path(input_dir)
-    all_pngs = list(input_path.glob('*.png'))
+    all_pngs = [p for p in input_path.iterdir() if p.is_file() and p.suffix.lower() == '.png']
     
     if filter_pattern:
         # Case sensitive fnmatch
@@ -85,29 +85,32 @@ class MaxRectsPacker:
                         break
         self.free_rects = [r for i, r in enumerate(self.free_rects) if i not in to_remove]
 
-def maxrects_pack(images, max_width=1024):
+def maxrects_pack(images, max_width=1024, max_height=8192):
     # Sort images by area descending or max side descending for best packing efficiency
     images.sort(key=lambda img: max(img[1].size[0], img[1].size[1]), reverse=True)
     
-    packer = MaxRectsPacker(max_width)
+    packer = MaxRectsPacker(max_width, max_height)
     frames = {}
     actual_width = 0
     actual_height = 0
     
+    skipped_any = False
     for filename, img in images:
         w, h = img.size
         node = packer.pack(w, h)
         if node is None:
-            raise Exception(f"Image {filename} could not be packed (out of bounds).")
+            print(f"Uyarı: '{filename}' görseli sığmadığı için atlandı (Maksimum boyutları aşıyor).")
+            skipped_any = True
+            continue
         
         x, y, w, h = node
         frames[filename] = node
         actual_width = max(actual_width, x + w)
         actual_height = max(actual_height, y + h)
         
-    return actual_width, actual_height, frames
+    return actual_width, actual_height, frames, skipped_any
 
-def process_images_and_save(image_paths, output_image_path, output_json_path, max_width):
+def process_images_and_save(image_paths, output_image_path, output_json_path, max_width, max_height):
     if not image_paths:
         print("Hata: Eşleşen dosya bulunamadı.")
         return False
@@ -125,7 +128,10 @@ def process_images_and_save(image_paths, output_image_path, output_json_path, ma
         return False
         
     try:
-        width, height, frames_info = maxrects_pack(images, max_width)
+        width, height, frames_info, skipped = maxrects_pack(images, max_width, max_height)
+        if not frames_info:
+            print("Hata: Hiçbir görsel paketlenemedi (hepsi çok büyük).")
+            return False
     except Exception as e:
         print(f"Hata paketleme sırasında: {e}")
         return False
@@ -172,14 +178,14 @@ def process_images_and_save(image_paths, output_image_path, output_json_path, ma
     print(f"JSON data created successfully: {output_json_path}")
     return True
 
-def generate_grouped_outputs(image_paths, base_image_path, base_json_path, max_width):
+def generate_grouped_outputs(image_paths, base_image_path, base_json_path, max_width, max_height):
     groups = defaultdict(list)
     for p in image_paths:
         groups[get_prefix(p.name)].append(p)
         
     if not groups:
         print("Hata: Eşleşen dosya bulunamadı.")
-        return
+        return False
         
     misc_group = []
     final_groups = {}
@@ -196,11 +202,16 @@ def generate_grouped_outputs(image_paths, base_image_path, base_json_path, max_w
     base_img_path = Path(base_image_path)
     base_js_path = Path(base_json_path)
     
+    all_success = True
     for prefix, paths in final_groups.items():
         out_img = base_img_path.with_name(f"{base_img_path.stem}_{prefix}{base_img_path.suffix}")
         out_js = base_js_path.with_name(f"{base_js_path.stem}_{prefix}{base_js_path.suffix}")
         print(f"\nProcessing group: {prefix}")
-        process_images_and_save(paths, str(out_img), str(out_js), max_width)
+        success = process_images_and_save(paths, str(out_img), str(out_js), max_width, max_height)
+        if not success:
+            all_success = False
+            
+    return all_success
 
 def interactive_mode():
     print("="*50)
@@ -222,6 +233,9 @@ def interactive_mode():
     max_width_str = input("4. Maksimum Genişlik (Max Width) [Varsayılan: 1024]: ").strip()
     max_width = int(max_width_str) if max_width_str.isdigit() else 1024
     
+    max_height_str = input("4b. Maksimum Yükseklik (Max Height) [Varsayılan: 8192]: ").strip()
+    max_height = int(max_height_str) if max_height_str.isdigit() else 8192
+    
     auto_group_str = input("5. Akıllı Gruplama (Auto-Group) Aktif Edilsin mi? (y/n) [Varsayılan: n]: ").strip().lower()
     auto_group = auto_group_str == 'y'
     
@@ -240,13 +254,17 @@ def interactive_mode():
         input("Çıkmak için Enter'a basın...")
         sys.exit(1)
         
+    success = False
     if auto_group:
-        generate_grouped_outputs(image_paths, output_image, output_json, max_width)
+        success = generate_grouped_outputs(image_paths, output_image, output_json, max_width, max_height)
     else:
-        process_images_and_save(image_paths, output_image, output_json, max_width)
+        success = process_images_and_save(image_paths, output_image, output_json, max_width, max_height)
         
     print("-" * 50)
-    print("İşlem tamamlandı!")
+    if success:
+        print("İşlem tamamlandı!")
+    else:
+        print("İşlem hatalarla sonlandı!")
     input("Çıkmak için Enter'a basın...")
 
 def main():
@@ -260,6 +278,7 @@ def main():
     parser.add_argument("output_image", help="Output spritesheet image path (e.g., output.png)")
     parser.add_argument("output_json", help="Output JSON data path (e.g., output.json)")
     parser.add_argument("--max-width", type=int, default=1024, help="Maximum width of the spritesheet")
+    parser.add_argument("--max-height", type=int, default=8192, help="Maximum height of the spritesheet")
     parser.add_argument("--filter", type=str, default=None, help="Filter files using glob pattern (e.g. 'zombie_*.png')")
     parser.add_argument("--auto-group", action="store_true", help="Group files by prefix and create separate spritesheets")
     
@@ -275,10 +294,14 @@ def main():
         print("Hata: Eşleşen dosya bulunamadı.")
         sys.exit(1)
         
+    success = False
     if args.auto_group:
-        generate_grouped_outputs(image_paths, args.output_image, args.output_json, args.max_width)
+        success = generate_grouped_outputs(image_paths, args.output_image, args.output_json, args.max_width, args.max_height)
     else:
-        process_images_and_save(image_paths, args.output_image, args.output_json, args.max_width)
+        success = process_images_and_save(image_paths, args.output_image, args.output_json, args.max_width, args.max_height)
+        
+    if not success:
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

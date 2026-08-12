@@ -37,7 +37,7 @@ python packer.py <input_dir> <output_image> <output_json> [options]
 *(If you are using the executable, replace `python packer.py` with `packer.exe`)*
 
 ### 1. Basic Packing
-Packs all PNGs in the `input` directory and creates `spritesheet.png` and `spritesheet.json`.
+Packs all `.png` and `.PNG` files in the `input` directory and creates `spritesheet.png` and `spritesheet.json`.
 ```bash
 python packer.py ./examples/input ./examples/output/spritesheet.png ./examples/output/spritesheet.json
 ```
@@ -54,6 +54,12 @@ Pack only specific sprites using a glob pattern.
 > ⚠️ **Note:** Always wrap your filter in quotes to prevent unwanted terminal shell expansion!
 ```bash
 python packer.py ./examples/input ./examples/output/spritesheet.png ./examples/output/spritesheet.json --filter "zombie_*.png"
+```
+
+### 4. Advanced Dimensions
+By default, max width is 1024 and max height is 8192. You can override these limits:
+```bash
+python packer.py ./examples/input ./examples/output/spritesheet.png ./examples/output/spritesheet.json --max-width 2048 --max-height 2048
 ```
 
 ## 🛠️ Architecture & Under the Hood
