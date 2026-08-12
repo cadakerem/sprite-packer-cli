@@ -1,10 +1,73 @@
 {
     "frames": [
         {
-            "filename": "zombie_walk_1.png",
+            "filename": "hero_run_1.png",
             "frame": {
                 "x": 0,
                 "y": 0,
+                "w": 64,
+                "h": 64
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 64,
+                "h": 64
+            },
+            "sourceSize": {
+                "w": 64,
+                "h": 64
+            }
+        },
+        {
+            "filename": "hero_run_2.png",
+            "frame": {
+                "x": 64,
+                "y": 0,
+                "w": 64,
+                "h": 64
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 64,
+                "h": 64
+            },
+            "sourceSize": {
+                "w": 64,
+                "h": 64
+            }
+        },
+        {
+            "filename": "hero_run_3.png",
+            "frame": {
+                "x": 0,
+                "y": 64,
+                "w": 64,
+                "h": 64
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 64,
+                "h": 64
+            },
+            "sourceSize": {
+                "w": 64,
+                "h": 64
+            }
+        },
+        {
+            "filename": "zombie_walk_1.png",
+            "frame": {
+                "x": 64,
+                "y": 64,
                 "w": 32,
                 "h": 64
             },
@@ -24,8 +87,8 @@
         {
             "filename": "zombie_walk_2.png",
             "frame": {
-                "x": 32,
-                "y": 0,
+                "x": 96,
+                "y": 64,
                 "w": 32,
                 "h": 64
             },
@@ -41,6 +104,48 @@
                 "w": 32,
                 "h": 64
             }
+        },
+        {
+            "filename": "box.png",
+            "frame": {
+                "x": 0,
+                "y": 128,
+                "w": 48,
+                "h": 48
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 48,
+                "h": 48
+            },
+            "sourceSize": {
+                "w": 48,
+                "h": 48
+            }
+        },
+        {
+            "filename": "coin_1.png",
+            "frame": {
+                "x": 48,
+                "y": 128,
+                "w": 16,
+                "h": 16
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 16,
+                "h": 16
+            },
+            "sourceSize": {
+                "w": 16,
+                "h": 16
+            }
         }
     ],
     "meta": {
@@ -49,8 +154,8 @@
         "image": "spritesheet.png",
         "format": "RGBA8888",
         "size": {
-            "w": 64,
-            "h": 64
+            "w": 128,
+            "h": 176
         },
         "scale": "1"
     }

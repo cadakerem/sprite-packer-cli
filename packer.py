@@ -24,38 +24,88 @@ def get_prefix(filename):
     prefix = re.sub(r'[-_]?\d+$', '', stem)
     return prefix
 
-def shelf_pack(images, max_width=1024):
-    """
-    Very basic shelf packing algorithm.
-    images: list of tuples (filename, PIL.Image)
-    Returns: (width, height, frames_dict) where frames_dict maps filename to (x, y, w, h)
-    """
-    frames = {}
-    current_x = 0
-    current_y = 0
-    row_height = 0
-    max_w = 0
+class MaxRectsPacker:
+    def __init__(self, max_width, max_height=8192):
+        self.max_width = max_width
+        self.max_height = max_height
+        self.free_rects = [(0, 0, max_width, max_height)]
+        
+    def pack(self, width, height):
+        best_node = None
+        best_short_fit = float('inf')
+        best_long_fit = float('inf')
+        
+        for r in self.free_rects:
+            rx, ry, rw, rh = r
+            if rw >= width and rh >= height:
+                leftover_w = rw - width
+                leftover_h = rh - height
+                short_fit = min(leftover_w, leftover_h)
+                long_fit = max(leftover_w, leftover_h)
+                
+                if short_fit < best_short_fit or (short_fit == best_short_fit and long_fit < best_long_fit):
+                    best_node = (rx, ry, width, height)
+                    best_short_fit = short_fit
+                    best_long_fit = long_fit
+                    
+        if best_node is None:
+            return None
+            
+        self._split_free_node(best_node)
+        self._prune_free_rects()
+        return best_node
+
+    def _split_free_node(self, node):
+        nx, ny, nw, nh = node
+        new_free_rects = []
+        for r in self.free_rects:
+            rx, ry, rw, rh = r
+            if nx < rx + rw and nx + nw > rx and ny < ry + rh and ny + nh > ry:
+                if ny > ry:
+                    new_free_rects.append((rx, ry, rw, ny - ry))
+                if ny + nh < ry + rh:
+                    new_free_rects.append((rx, ny + nh, rw, (ry + rh) - (ny + nh)))
+                if nx > rx:
+                    new_free_rects.append((rx, ry, nx - rx, rh))
+                if nx + nw < rx + rw:
+                    new_free_rects.append((nx + nw, ry, (rx + rw) - (nx + nw), rh))
+            else:
+                new_free_rects.append(r)
+        self.free_rects = new_free_rects
+
+    def _prune_free_rects(self):
+        to_remove = set()
+        for i, r1 in enumerate(self.free_rects):
+            x1, y1, w1, h1 = r1
+            for j, r2 in enumerate(self.free_rects):
+                if i != j and j not in to_remove:
+                    x2, y2, w2, h2 = r2
+                    if x2 <= x1 and y2 <= y1 and x2 + w2 >= x1 + w1 and y2 + h2 >= y1 + h1:
+                        to_remove.add(i)
+                        break
+        self.free_rects = [r for i, r in enumerate(self.free_rects) if i not in to_remove]
+
+def maxrects_pack(images, max_width=1024):
+    # Sort images by area descending or max side descending for best packing efficiency
+    images.sort(key=lambda img: max(img[1].size[0], img[1].size[1]), reverse=True)
     
-    # Sort images by height descending for a slightly better shelf pack
-    images.sort(key=lambda img: img[1].size[1], reverse=True)
+    packer = MaxRectsPacker(max_width)
+    frames = {}
+    actual_width = 0
+    actual_height = 0
     
     for filename, img in images:
         w, h = img.size
+        node = packer.pack(w, h)
+        if node is None:
+            raise Exception(f"Image {filename} could not be packed (out of bounds).")
         
-        # Check if we need to wrap to the next row
-        if current_x + w > max_width and current_x > 0:
-            current_x = 0
-            current_y += row_height
-            row_height = 0
-            
-        frames[filename] = (current_x, current_y, w, h)
+        x, y, w, h = node
+        frames[filename] = node
+        actual_width = max(actual_width, x + w)
+        actual_height = max(actual_height, y + h)
         
-        current_x += w
-        row_height = max(row_height, h)
-        max_w = max(max_w, current_x)
-        
-    total_height = current_y + row_height
-    return max_w, total_height, frames
+    return actual_width, actual_height, frames
 
 def process_images_and_save(image_paths, output_image_path, output_json_path, max_width):
     if not image_paths:
@@ -74,7 +124,11 @@ def process_images_and_save(image_paths, output_image_path, output_json_path, ma
         print("Hata: Geçerli görsel bulunamadı.")
         return False
         
-    width, height, frames_info = shelf_pack(images, max_width)
+    try:
+        width, height, frames_info = maxrects_pack(images, max_width)
+    except Exception as e:
+        print(f"Hata paketleme sırasında: {e}")
+        return False
     
     # Create the output image
     spritesheet = Image.new('RGBA', (width, height), (0, 0, 0, 0))
