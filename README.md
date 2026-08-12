@@ -13,17 +13,28 @@ It utilizes the advanced **MaxRects Bin-Packing Algorithm** to ensure zero waste
 
 ## 🚀 Installation & Setup
 
+You can either run this tool as a standalone executable (no installation required) or as a Python script.
+
+### Option A: Standalone Executable (Windows)
+1. Download the `packer.exe` from the Releases tab (or find it in your `dist/` folder if you built it yourself).
+2. Simply double-click the `.exe` file.
+3. An interactive wizard will open in the terminal and ask you for the necessary paths and options!
+
+### Option B: Run from Source
 Ensure you have Python 3.x installed. Then install the required dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 💻 Usage
+## 💻 Usage (CLI Mode)
+
+If you prefer to use the tool in scripts or CI/CD pipelines, you can bypass the interactive wizard by providing arguments directly:
 
 ```bash
 python packer.py <input_dir> <output_image> <output_json> [options]
 ```
+*(If you are using the executable, replace `python packer.py` with `packer.exe`)*
 
 ### 1. Basic Packing
 Packs all PNGs in the `input` directory and creates `spritesheet.png` and `spritesheet.json`.

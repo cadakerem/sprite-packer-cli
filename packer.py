@@ -190,7 +190,59 @@ def generate_grouped_outputs(image_paths, base_image_path, base_json_path, max_w
         print(f"\nProcessing group: {prefix}")
         process_images_and_save(paths, str(out_img), str(out_js), max_width)
 
+def interactive_mode():
+    print("="*50)
+    print("🎮 Sprite Packer CLI - İnteraktif Mod 🎮")
+    print("="*50)
+    
+    input_dir = input("1. Girdi Klasörü (Input Directory) [Varsayılan: ./input]: ").strip()
+    if not input_dir:
+        input_dir = "./input"
+        
+    output_image = input("2. Çıktı Görseli Yolu (Output Image) [Varsayılan: ./output/spritesheet.png]: ").strip()
+    if not output_image:
+        output_image = "./output/spritesheet.png"
+        
+    output_json = input("3. Çıktı JSON Yolu (Output JSON) [Varsayılan: ./output/spritesheet.json]: ").strip()
+    if not output_json:
+        output_json = "./output/spritesheet.json"
+        
+    max_width_str = input("4. Maksimum Genişlik (Max Width) [Varsayılan: 1024]: ").strip()
+    max_width = int(max_width_str) if max_width_str.isdigit() else 1024
+    
+    auto_group_str = input("5. Akıllı Gruplama (Auto-Group) Aktif Edilsin mi? (y/n) [Varsayılan: n]: ").strip().lower()
+    auto_group = auto_group_str == 'y'
+    
+    filter_pattern = None
+    if not auto_group:
+        filter_str = input("6. Filtre (Örn: zombie_*.png) [Boş bırakılabilir]: ").strip()
+        if filter_str:
+            filter_pattern = filter_str
+            
+    print("\nPaketleme işlemi başlatılıyor...\n" + "-"*50)
+    
+    image_paths = get_image_files(input_dir, filter_pattern)
+    
+    if not image_paths:
+        print("Hata: Eşleşen dosya bulunamadı.")
+        input("Çıkmak için Enter'a basın...")
+        sys.exit(1)
+        
+    if auto_group:
+        generate_grouped_outputs(image_paths, output_image, output_json, max_width)
+    else:
+        process_images_and_save(image_paths, output_image, output_json, max_width)
+        
+    print("-" * 50)
+    print("İşlem tamamlandı!")
+    input("Çıkmak için Enter'a basın...")
+
 def main():
+    # Eğer komut satırından hiçbir argüman verilmediyse (örneğin .exe'ye çift tıklandıysa)
+    if len(sys.argv) == 1:
+        interactive_mode()
+        return
+
     parser = argparse.ArgumentParser(description="Sprite Sheet Packer CLI")
     parser.add_argument("input_dir", help="Directory containing input PNG files")
     parser.add_argument("output_image", help="Output spritesheet image path (e.g., output.png)")
