@@ -46,7 +46,7 @@
     "meta": {
         "app": "Sprite Packer CLI",
         "version": "1.0",
-        "image": "spritesheet.png",
+        "image": "spritesheet_zombie_walk.png",
         "format": "RGBA8888",
         "size": {
             "w": 64,

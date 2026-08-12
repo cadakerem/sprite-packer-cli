@@ -1,11 +1,11 @@
 {
     "frames": [
         {
-            "filename": "zombie_walk_1.png",
+            "filename": "hero_run_1.png",
             "frame": {
                 "x": 0,
                 "y": 0,
-                "w": 32,
+                "w": 64,
                 "h": 64
             },
             "rotated": false,
@@ -13,20 +13,20 @@
             "spriteSourceSize": {
                 "x": 0,
                 "y": 0,
-                "w": 32,
+                "w": 64,
                 "h": 64
             },
             "sourceSize": {
-                "w": 32,
+                "w": 64,
                 "h": 64
             }
         },
         {
-            "filename": "zombie_walk_2.png",
+            "filename": "hero_run_2.png",
             "frame": {
-                "x": 32,
+                "x": 64,
                 "y": 0,
-                "w": 32,
+                "w": 64,
                 "h": 64
             },
             "rotated": false,
@@ -34,11 +34,32 @@
             "spriteSourceSize": {
                 "x": 0,
                 "y": 0,
-                "w": 32,
+                "w": 64,
                 "h": 64
             },
             "sourceSize": {
-                "w": 32,
+                "w": 64,
+                "h": 64
+            }
+        },
+        {
+            "filename": "hero_run_3.png",
+            "frame": {
+                "x": 128,
+                "y": 0,
+                "w": 64,
+                "h": 64
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 64,
+                "h": 64
+            },
+            "sourceSize": {
+                "w": 64,
                 "h": 64
             }
         }
@@ -46,10 +67,10 @@
     "meta": {
         "app": "Sprite Packer CLI",
         "version": "1.0",
-        "image": "spritesheet.png",
+        "image": "spritesheet_hero_run.png",
         "format": "RGBA8888",
         "size": {
-            "w": 64,
+            "w": 192,
             "h": 64
         },
         "scale": "1"
