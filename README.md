@@ -1,5 +1,7 @@
 # Sprite Packer CLI 🎮
 
+![Sprite Packer Banner](assets/banner.jpg)
+
 A professional command-line tool for Game Developers (especially tailored for MonoGame/XNA ecosystem) to pack scattered PNG frames into a single, highly optimized Sprite Sheet. 
 
 It utilizes the advanced **MaxRects Bin-Packing Algorithm** to ensure zero wasted space and outputs a TexturePacker-compatible JSON format.
