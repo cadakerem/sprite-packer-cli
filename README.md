@@ -29,7 +29,21 @@ Ensure you have Python 3.x installed. Then install the required dependencies:
 pip install -r requirements.txt
 ```
 
-## 💻 Usage (CLI Mode)
+## 🖱️ Usage (Interactive / Normal Mode)
+
+The easiest way to use the tool is through its built-in interactive wizard. You don't need to type any complex commands!
+
+1. **Double-click** the `sprite-packer-cli.exe` file.
+2. A terminal window will open and guide you step-by-step:
+   - **Input Directory:** Where your scattered `.png` files are located. (Press Enter to use the default `./input` folder).
+   - **Output Paths:** Where to save the packed `.png` and `.json` files.
+   - **Max Width/Height:** Constrain the texture size (useful for mobile game limits).
+   - **Auto-Group:** Type `y` if you want to automatically separate different animations into their own files based on their names (e.g., `hero_run`, `hero_jump`).
+3. Hit **Enter** and watch it instantly pack your sprites!
+
+---
+
+## 💻 Usage (CLI / Advanced Mode)
 
 If you prefer to use the tool in scripts or CI/CD pipelines, you can bypass the interactive wizard by providing arguments directly:
 
