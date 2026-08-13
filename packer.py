@@ -99,7 +99,7 @@ def maxrects_pack(images, max_width=1024, max_height=8192):
         w, h = img.size
         node = packer.pack(w, h)
         if node is None:
-            print(f"Uyarı: '{filename}' görseli sığmadığı için atlandı (Maksimum boyutları aşıyor).")
+            print(f"Warning: Image '{filename}' skipped because it doesn't fit (exceeds max dimensions).")
             skipped_any = True
             continue
         
@@ -112,7 +112,7 @@ def maxrects_pack(images, max_width=1024, max_height=8192):
 
 def process_images_and_save(image_paths, output_image_path, output_json_path, max_width, max_height):
     if not image_paths:
-        print("Hata: Eşleşen dosya bulunamadı.")
+        print("Error: No matching files found.")
         return False
         
     images = []
@@ -124,16 +124,16 @@ def process_images_and_save(image_paths, output_image_path, output_json_path, ma
             print(f"Error loading {p}: {e}")
             
     if not images:
-        print("Hata: Geçerli görsel bulunamadı.")
+        print("Error: No valid images found.")
         return False
         
     try:
         width, height, frames_info, skipped = maxrects_pack(images, max_width, max_height)
         if not frames_info:
-            print("Hata: Hiçbir görsel paketlenemedi (hepsi çok büyük).")
+            print("Error: No images could be packed (all are too large).")
             return False
     except Exception as e:
-        print(f"Hata paketleme sırasında: {e}")
+        print(f"Error during packing: {e}")
         return False
     
     # Create the output image
@@ -187,7 +187,7 @@ def generate_grouped_outputs(image_paths, base_image_path, base_json_path, max_w
         groups[get_prefix(p.name)].append(p)
         
     if not groups:
-        print("Hata: Eşleşen dosya bulunamadı.")
+        print("Error: No matching files found.")
         return False
         
     misc_group = []
@@ -218,43 +218,43 @@ def generate_grouped_outputs(image_paths, base_image_path, base_json_path, max_w
 
 def interactive_mode():
     print("="*50)
-    print("🎮 Sprite Packer CLI - İnteraktif Mod 🎮")
+    print("🎮 Sprite Packer CLI - Interactive Mode 🎮")
     print("="*50)
     
-    input_dir = input("1. Girdi Klasörü (Input Directory) [Varsayılan: ./input]: ").strip()
+    input_dir = input("1. Input Directory [Default: ./input]: ").strip()
     if not input_dir:
         input_dir = "./input"
         
-    output_image = input("2. Çıktı Görseli Yolu (Output Image) [Varsayılan: ./output/spritesheet.png]: ").strip()
+    output_image = input("2. Output Image Path [Default: ./output/spritesheet.png]: ").strip()
     if not output_image:
         output_image = "./output/spritesheet.png"
         
-    output_json = input("3. Çıktı JSON Yolu (Output JSON) [Varsayılan: ./output/spritesheet.json]: ").strip()
+    output_json = input("3. Output JSON Path [Default: ./output/spritesheet.json]: ").strip()
     if not output_json:
         output_json = "./output/spritesheet.json"
         
-    max_width_str = input("4. Maksimum Genişlik (Max Width) [Varsayılan: 1024]: ").strip()
+    max_width_str = input("4. Max Width [Default: 1024]: ").strip()
     max_width = int(max_width_str) if max_width_str.isdigit() else 1024
     
-    max_height_str = input("4b. Maksimum Yükseklik (Max Height) [Varsayılan: 8192]: ").strip()
+    max_height_str = input("4b. Max Height [Default: 8192]: ").strip()
     max_height = int(max_height_str) if max_height_str.isdigit() else 8192
     
-    auto_group_str = input("5. Akıllı Gruplama (Auto-Group) Aktif Edilsin mi? (y/n) [Varsayılan: n]: ").strip().lower()
+    auto_group_str = input("5. Enable Auto-Group? (y/n) [Default: n]: ").strip().lower()
     auto_group = auto_group_str == 'y'
     
     filter_pattern = None
     if not auto_group:
-        filter_str = input("6. Filtre (Örn: zombie_*.png) [Boş bırakılabilir]: ").strip()
+        filter_str = input("6. Filter (e.g. zombie_*.png) [Optional]: ").strip()
         if filter_str:
             filter_pattern = filter_str
             
-    print("\nPaketleme işlemi başlatılıyor...\n" + "-"*50)
+    print("\nStarting packing process...\n" + "-"*50)
     
     image_paths = get_image_files(input_dir, filter_pattern)
     
     if not image_paths:
-        print("Hata: Eşleşen dosya bulunamadı.")
-        input("Çıkmak için Enter'a basın...")
+        print("Error: No matching files found.")
+        input("Press Enter to exit...")
         sys.exit(1)
         
     success = False
@@ -265,13 +265,13 @@ def interactive_mode():
         
     print("-" * 50)
     if success:
-        print("İşlem tamamlandı!")
+        print("Process completed successfully!")
     else:
-        print("İşlem hatalarla sonlandı!")
-    input("Çıkmak için Enter'a basın...")
+        print("Process failed with errors!")
+    input("Press Enter to exit...")
 
 def main():
-    # Eğer komut satırından hiçbir argüman verilmediyse (örneğin .exe'ye çift tıklandıysa)
+    # If no command line arguments are provided (e.g. double clicking the .exe)
     if len(sys.argv) == 1:
         interactive_mode()
         return
@@ -288,13 +288,13 @@ def main():
     args = parser.parse_args()
     
     if args.filter and args.auto_group:
-        print("Hata: --filter ve --auto-group aynı anda kullanılamaz.")
+        print("Error: --filter and --auto-group cannot be used together.")
         sys.exit(1)
         
     image_paths = get_image_files(args.input_dir, args.filter)
     
     if not image_paths:
-        print("Hata: Eşleşen dosya bulunamadı.")
+        print("Error: No matching files found.")
         sys.exit(1)
         
     success = False
