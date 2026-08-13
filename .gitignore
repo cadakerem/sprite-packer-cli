@@ -6,7 +6,6 @@ __pycache__/
 # PyInstaller
 build/
 dist/
-*.spec
 
 # Test outputs
 examples/output/
