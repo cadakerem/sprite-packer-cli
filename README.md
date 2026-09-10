@@ -1,4 +1,4 @@
-# Sprite Packer CLI 🎮
+# Sprite Packer CLI
 
 ![Sprite Packer Banner](assets/banner.jpg)
 
@@ -6,14 +6,14 @@ A professional command-line tool for Game Developers (especially tailored for Mo
 
 It utilizes the advanced **MaxRects Bin-Packing Algorithm** to ensure zero wasted space and outputs a TexturePacker-compatible JSON format.
 
-## ✨ Features
+## Features
 
 - **Advanced Bin-Packing:** Uses the industry-standard MaxRects algorithm (Best Short Side Fit) for maximum space optimization compared to basic shelf packing.
 - **Auto-Grouping (`--auto-group`):** Automatically detects sprite prefixes (e.g., `hero_run_1.png` and `zombie_walk_1.png`) and groups them into separate sprite sheets (`spritesheet_hero_run.png`, `spritesheet_zombie_walk.png`) on the fly.
 - **Smart Filtering (`--filter`):** Safely filter specific files using glob patterns (e.g., `--filter "zombie_*.png"`) with built-in case-sensitivity and OS-agnostic protection.
 - **MonoGame Ready:** Directly exports TexturePacker JSON (Array format), easily readable by MonoGame.Extended or custom content pipelines.
 
-## 🚀 Installation & Setup
+## Installation & Setup
 
 You can either run this tool as a standalone executable (no installation required) or as a Python script.
 
@@ -29,7 +29,7 @@ Ensure you have Python 3.x installed. Then install the required dependencies:
 pip install -r requirements.txt
 ```
 
-## 🖱️ Usage (Interactive / Normal Mode)
+## Usage (Interactive / Normal Mode)
 
 The easiest way to use the tool is through its built-in interactive wizard. You don't need to type any complex commands!
 
@@ -43,7 +43,7 @@ The easiest way to use the tool is through its built-in interactive wizard. You 
 
 ---
 
-## 💻 Usage (CLI / Advanced Mode)
+## Usage (CLI / Advanced Mode)
 
 If you prefer to use the tool in scripts or CI/CD pipelines, you can bypass the interactive wizard by providing arguments directly:
 
@@ -78,7 +78,7 @@ By default, max width is 1024 and max height is 8192. You can override these lim
 python packer.py ./examples/input ./examples/output/spritesheet.png ./examples/output/spritesheet.json --max-width 2048 --max-height 2048
 ```
 
-## 🛠️ Architecture & Under the Hood
+## Architecture & Under the Hood
 - **Language:** Python 3
 - **Image Processing:** `Pillow` (PIL)
 - **Algorithm:** 2D MaxRects Bin-Packing (Splits free rectangles dynamically as images are placed, keeping the canvas as small as possible).
