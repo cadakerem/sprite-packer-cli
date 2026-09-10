@@ -6,8 +6,7 @@ A professional command-line tool for Game Developers (especially tailored for Mo
 
 It utilizes the advanced **MaxRects Bin-Packing Algorithm** to ensure zero wasted space and outputs a TexturePacker-compatible JSON format.
 
-## Features
-
+## ⚡ Features
 - **Advanced Bin-Packing:** Uses the industry-standard MaxRects algorithm (Best Short Side Fit) for maximum space optimization compared to basic shelf packing.
 - **Auto-Grouping (`--auto-group`):** Automatically detects sprite prefixes (e.g., `hero_run_1.png` and `zombie_walk_1.png`) and groups them into separate sprite sheets (`spritesheet_hero_run.png`, `spritesheet_zombie_walk.png`) on the fly.
 - **Smart Filtering (`--filter`):** Safely filter specific files using glob patterns (e.g., `--filter "zombie_*.png"`) with built-in case-sensitivity and OS-agnostic protection.
