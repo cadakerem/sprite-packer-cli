@@ -85,7 +85,7 @@ python packer.py ./examples/input ./examples/output/spritesheet.png ./examples/o
 ## 🧑‍💻 Developer & Contributions
 Developed by Kerem Barbaros Karnabat (@cadakerem).
 
-> **Note on Repository Structure:** [TODO: Add any specific notes about the repository structure here, e.g., source vs build artifacts.]
+> **Note on Repository Structure:** The core MaxRects algorithm and interactive CLI logic are contained within a single `packer.py` file using the Pillow library. It is designed to be easily compiled into a standalone Windows executable using PyInstaller (`sprite-packer-cli.spec`). Example assets and a test environment generator can be found in `examples/` and `setup_test_env.py`.
 
 Contributions, issues, and feature requests are welcome! Feel free to check the [Issues page](../../issues).
 
