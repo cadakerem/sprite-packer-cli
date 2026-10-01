@@ -12,6 +12,11 @@ It utilizes the advanced **MaxRects Bin-Packing Algorithm** to ensure zero waste
 - **Smart Filtering (`--filter`):** Safely filter specific files using glob patterns (e.g., `--filter "zombie_*.png"`) with built-in case-sensitivity and OS-agnostic protection.
 - **MonoGame Ready:** Directly exports TexturePacker JSON (Array format), easily readable by MonoGame.Extended or custom content pipelines.
 
+## 🏗️ Architecture & Under the Hood
+- **Language:** Python 3
+- **Image Processing:** `Pillow` (PIL)
+- **Algorithm:** 2D MaxRects Bin-Packing (Splits free rectangles dynamically as images are placed, keeping the canvas as small as possible).
+
 ## 📦 Installation & Setup
 
 You can either run this tool as a standalone executable (no installation required) or as a Python script.
@@ -77,7 +82,12 @@ By default, max width is 1024 and max height is 8192. You can override these lim
 python packer.py ./examples/input ./examples/output/spritesheet.png ./examples/output/spritesheet.json --max-width 2048 --max-height 2048
 ```
 
-## 🏗️ Architecture & Under the Hood
-- **Language:** Python 3
-- **Image Processing:** `Pillow` (PIL)
-- **Algorithm:** 2D MaxRects Bin-Packing (Splits free rectangles dynamically as images are placed, keeping the canvas as small as possible).
+## 🧑‍💻 Developer & Contributions
+Developed by Kerem Barbaros Karnabat (@cadakerem).
+
+> **Note on Repository Structure:** [TODO: Add any specific notes about the repository structure here, e.g., source vs build artifacts.]
+
+Contributions, issues, and feature requests are welcome! Feel free to check the [Issues page](../../issues).
+
+## 📜 License
+This project is licensed under the [MIT License](LICENSE).
